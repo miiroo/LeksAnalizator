@@ -153,11 +153,18 @@ namespace LeksAnalizator
                                     if (exitCode != 1) {
                                         exitCode = 1;
                                         exitMessage = "Can't recognize symbol in keyword or constant in row " + rowNumber.ToString();
-
-                                        for (int j = 1; j < rowNumber; j++) {
-                                            start += textBox1.Lines[j].Count();
+                                        if (exitCode != 1) {
+                                            if (rowNumber == 0) {
+                                                for (int j = 1; j < rowNumber; j++) {
+                                                    start += textBox1.Lines[j].Count();
+                                                }
+                                            }
+                                            else
+                                                for (int j = 0; j < rowNumber; j++) {
+                                                    start += textBox1.Lines[j].Count();
+                                                }
+                                            start += i;
                                         }
-                                        start += i;
                                     }
                                 }
 
@@ -208,11 +215,18 @@ namespace LeksAnalizator
                                 if (Char.IsLetter(currentLetter)) {
                                     exitCode = 1;
                                     exitMessage = "Numeric constant consider letter" + rowNumber.ToString();
-                                    if (exitCode != 1) { 
-                                        for (int j = 1; j < rowNumber; j++) {
-                                            start += textBox1.Lines[j].Count();
+                                    if (exitCode != 1) {
+                                        if (rowNumber == 0) {
+                                            for (int j = 1; j < rowNumber; j++) {
+                                                start += textBox1.Lines[j].Count();
+                                            }
                                         }
-                                    start += i;
+                                        else
+                                            for (int j = 0; j < rowNumber; j++) {
+                                                start += textBox1.Lines[j].Count();
+                                            }
+                                        start += i;
+
                                     }
                                 }
                             }
@@ -298,9 +312,15 @@ namespace LeksAnalizator
                                     exitCode = 1;
                                     exitMessage = "Can't recognize symbol in row " + rowNumber.ToString();
                                     if (exitCode != 1) {
-                                        for (int j = 1; j < rowNumber; j++) {
-                                            start += textBox1.Lines[j].Count();
+                                        if (rowNumber == 0) {
+                                            for (int j = 1; j < rowNumber; j++) {
+                                                start += textBox1.Lines[j].Count();
+                                            }
                                         }
+                                        else
+                                            for (int j = 0; j < rowNumber; j++) {
+                                                start += textBox1.Lines[j].Count();
+                                            }
                                         start += i;
                                     }
                                 }
