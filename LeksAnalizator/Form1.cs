@@ -67,10 +67,11 @@ namespace LeksAnalizator
 
 
         private void button1_Click(object sender, EventArgs e) {
+            start = 0;
             identifierGrid.Rows.Clear();
             logGrid.Rows.Clear();
             constantGrid.Rows.Clear();
-
+            exitCode = 0;
             identArray.Clear();
             constArray.Clear();
 
@@ -151,20 +152,17 @@ namespace LeksAnalizator
                                 //Иначе выдаём ошибку о том, что не знаем такого символа
                                 else {
                                     if (exitCode != 1) {
-                                        exitCode = 1;
+                                       
                                         exitMessage = "Can't recognize symbol in keyword or constant in row " + rowNumber.ToString();
                                         if (exitCode != 1) {
-                                            if (rowNumber == 0) {
-                                                for (int j = 1; j < rowNumber; j++) {
-                                                    start += textBox1.Lines[j].Count();
+                                            if (rowNumber != 1) {
+                                                for (int j = 0; j < rowNumber-1; j++) {
+                                                    start += textBox1.Lines[j].Count()+2;
                                                 }
                                             }
-                                            else
-                                                for (int j = 0; j < rowNumber; j++) {
-                                                    start += textBox1.Lines[j].Count();
-                                                }
                                             start += i;
                                         }
+                                        exitCode = 1;
                                     }
                                 }
 
@@ -213,21 +211,18 @@ namespace LeksAnalizator
                             }
                             else {
                                 if (Char.IsLetter(currentLetter)) {
-                                    exitCode = 1;
+                                  
                                     exitMessage = "Numeric constant consider letter" + rowNumber.ToString();
                                     if (exitCode != 1) {
-                                        if (rowNumber == 0) {
-                                            for (int j = 1; j < rowNumber; j++) {
+                                        if (rowNumber != 1) {
+                                            for (int j = 0; j < rowNumber-1; j++) {
                                                 start += textBox1.Lines[j].Count();
                                             }
                                         }
-                                        else
-                                            for (int j = 0; j < rowNumber; j++) {
-                                                start += textBox1.Lines[j].Count();
-                                            }
                                         start += i;
-
                                     }
+                                    
+                                    exitCode = 1;
                                 }
                             }
                         }
@@ -253,7 +248,7 @@ namespace LeksAnalizator
                                     logGrid.Rows.Add(logID, idInTable.ToString(), "'", tableType, rowNumber);
                                     logID++;
 
-                                    
+
                                     getWord += currentLetter;
                                     i++;
                                     if (i < currentRowStr.Length) currentLetter = currentRowStr[i];
@@ -309,22 +304,20 @@ namespace LeksAnalizator
                             else {
                                 if (exitCode != 2) {
                                     //Такого делиметра не существует для нас
-                                    exitCode = 1;
+
                                     exitMessage = "Can't recognize symbol in row " + rowNumber.ToString();
+
                                     if (exitCode != 1) {
-                                        if (rowNumber == 0) {
-                                            for (int j = 1; j < rowNumber; j++) {
+                                        if (rowNumber != 1) {
+                                            for (int j = 0; j < rowNumber-1; j++) {
                                                 start += textBox1.Lines[j].Count();
                                             }
                                         }
-                                        else
-                                            for (int j = 0; j < rowNumber; j++) {
-                                                start += textBox1.Lines[j].Count();
-                                            }
                                         start += i;
                                     }
+                                    exitCode = 1;
                                 }
-                           }
+                            }
                         }
                         if (exitCode != 1) {
                             logGrid.Rows.Add(logID, idInTable.ToString(), getWord, tableType, rowNumber);
