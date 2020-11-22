@@ -29,23 +29,23 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.keyWordGrid1 = new System.Windows.Forms.DataGridView();
-            this.keyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.keyWord = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.litteralsGrid = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
             this.identifierGrid = new System.Windows.Forms.DataGridView();
-            this.identID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.identWord = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label3 = new System.Windows.Forms.Label();
             this.logGrid = new System.Windows.Forms.DataGridView();
             this.label4 = new System.Windows.Forms.Label();
             this.constantGrid = new System.Windows.Forms.DataGridView();
-            this.constId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.constant = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.resultLabel = new System.Windows.Forms.Label();
+            this.keyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.keyWord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.identID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.identWord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.constId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.constant = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.litID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.litteralL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.logID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -90,18 +90,6 @@
             this.keyWordGrid1.RowHeadersVisible = false;
             this.keyWordGrid1.Size = new System.Drawing.Size(168, 353);
             this.keyWordGrid1.TabIndex = 2;
-            // 
-            // keyID
-            // 
-            this.keyID.HeaderText = "ID";
-            this.keyID.Name = "keyID";
-            this.keyID.Width = 30;
-            // 
-            // keyWord
-            // 
-            this.keyWord.HeaderText = "Key Word";
-            this.keyWord.Name = "keyWord";
-            this.keyWord.Width = 137;
             // 
             // label1
             // 
@@ -151,20 +139,6 @@
             this.identifierGrid.Size = new System.Drawing.Size(162, 353);
             this.identifierGrid.TabIndex = 6;
             // 
-            // identID
-            // 
-            this.identID.HeaderText = "ID";
-            this.identID.Name = "identID";
-            this.identID.ReadOnly = true;
-            this.identID.Width = 30;
-            // 
-            // identWord
-            // 
-            this.identWord.HeaderText = "Identifier";
-            this.identWord.Name = "identWord";
-            this.identWord.ReadOnly = true;
-            this.identWord.Width = 131;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -213,20 +187,6 @@
             this.constantGrid.Size = new System.Drawing.Size(198, 150);
             this.constantGrid.TabIndex = 10;
             // 
-            // constId
-            // 
-            this.constId.HeaderText = "ID";
-            this.constId.Name = "constId";
-            this.constId.ReadOnly = true;
-            this.constId.Width = 30;
-            // 
-            // constant
-            // 
-            this.constant.HeaderText = "Const";
-            this.constant.Name = "constant";
-            this.constant.ReadOnly = true;
-            this.constant.Width = 167;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -255,9 +215,49 @@
             this.resultLabel.TabIndex = 13;
             this.resultLabel.Text = "Not analized";
             // 
+            // keyID
+            // 
+            this.keyID.HeaderText = "No";
+            this.keyID.Name = "keyID";
+            this.keyID.Width = 30;
+            // 
+            // keyWord
+            // 
+            this.keyWord.HeaderText = "Key Word";
+            this.keyWord.Name = "keyWord";
+            this.keyWord.Width = 137;
+            // 
+            // identID
+            // 
+            this.identID.HeaderText = "No";
+            this.identID.Name = "identID";
+            this.identID.ReadOnly = true;
+            this.identID.Width = 30;
+            // 
+            // identWord
+            // 
+            this.identWord.HeaderText = "Identifier";
+            this.identWord.Name = "identWord";
+            this.identWord.ReadOnly = true;
+            this.identWord.Width = 131;
+            // 
+            // constId
+            // 
+            this.constId.HeaderText = "No";
+            this.constId.Name = "constId";
+            this.constId.ReadOnly = true;
+            this.constId.Width = 30;
+            // 
+            // constant
+            // 
+            this.constant.HeaderText = "Const";
+            this.constant.Name = "constant";
+            this.constant.ReadOnly = true;
+            this.constant.Width = 167;
+            // 
             // litID
             // 
-            this.litID.HeaderText = "ID";
+            this.litID.HeaderText = "No";
             this.litID.Name = "litID";
             this.litID.ReadOnly = true;
             this.litID.Width = 60;
@@ -271,19 +271,19 @@
             // 
             // logID
             // 
-            this.logID.HeaderText = "ID";
+            this.logID.HeaderText = "No";
             this.logID.Name = "logID";
             this.logID.Width = 30;
             // 
             // tablesId
             // 
-            this.tablesId.HeaderText = "ID in table";
+            this.tablesId.HeaderText = "No in table";
             this.tablesId.Name = "tablesId";
             this.tablesId.Width = 50;
             // 
             // word
             // 
-            this.word.HeaderText = "Word";
+            this.word.HeaderText = "Lexeme";
             this.word.Name = "word";
             this.word.Width = 90;
             // 
@@ -343,23 +343,23 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView logGrid;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn keyID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn keyWord;
-        private System.Windows.Forms.DataGridViewTextBoxColumn identID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn identWord;
         private System.Windows.Forms.DataGridView constantGrid;
-        private System.Windows.Forms.DataGridViewTextBoxColumn constId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn constant;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label resultLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn keyID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn keyWord;
         private System.Windows.Forms.DataGridViewTextBoxColumn litID;
         private System.Windows.Forms.DataGridViewTextBoxColumn litteralL;
+        private System.Windows.Forms.DataGridViewTextBoxColumn identID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn identWord;
         private System.Windows.Forms.DataGridViewTextBoxColumn logID;
         private System.Windows.Forms.DataGridViewTextBoxColumn tablesId;
         private System.Windows.Forms.DataGridViewTextBoxColumn word;
         private System.Windows.Forms.DataGridViewTextBoxColumn tableType;
         private System.Windows.Forms.DataGridViewTextBoxColumn rowNumber;
+        private System.Windows.Forms.DataGridViewTextBoxColumn constId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn constant;
     }
 }
 

@@ -181,7 +181,7 @@ namespace LeksAnalizator
                             }
                             i--;
                             //Если после числа пробел - число константа
-                            if (currentLetter.Equals(' ') && exitCode != 2) {
+                            if (currentLetter.Equals(' ') || Char.IsLetter(currentLetter) && exitCode != 2) {
                                 if (constArray.Contains(getWord)) {
                                     tableType = "const";
                                     idInTable = constArray.IndexOf(getWord);
@@ -190,11 +190,10 @@ namespace LeksAnalizator
                                 else {
                                     constArray.Add(getWord);
                                     tableType = "const";
-                                    idInTable = identArray.IndexOf(getWord);
+                                    idInTable = constArray.IndexOf(getWord);
                                     exitCode = 2;
                                 }
                             }
-
                             //Идёт делиметр или ключевое слово, число константа
                             if (delimArray.Contains(currentLetter.ToString()) || keyArray.Contains(currentLetter.ToString()) && exitCode != 2) {
                                 if (constArray.Contains(getWord)) {
@@ -208,20 +207,21 @@ namespace LeksAnalizator
                                     idInTable = constArray.IndexOf(getWord);
                                     exitCode = 2;
                                 }
-                            }
+                            } 
                             else {
-                                if (Char.IsLetter(currentLetter)) {
-                                  
-                                    exitMessage = "Numeric constant consider letter" + rowNumber.ToString();
+                                if (exitCode != 2) {
+                                    //Такого делиметра не существует для нас
+
+                                    exitMessage = "Can't recognize symbol in row " + rowNumber.ToString();
+
                                     if (exitCode != 1) {
                                         if (rowNumber != 1) {
-                                            for (int j = 0; j < rowNumber-1; j++) {
+                                            for (int j = 0; j < rowNumber - 1; j++) {
                                                 start += textBox1.Lines[j].Count();
                                             }
                                         }
                                         start += i;
                                     }
-                                    
                                     exitCode = 1;
                                 }
                             }
