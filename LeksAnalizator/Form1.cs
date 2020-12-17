@@ -345,12 +345,11 @@ namespace LeksAnalizator
         }
    /////////////////////////////////////////////////////////////////////////////////////
    // //////////////////////////LAB2////////////////////////////////////////////////////
-        // if Length(S) > 15 + 1 + 10 then Error
+        // if (Length(S) > 15 + 1 + 10) then Error
         private void button2_Click(object sender, EventArgs e) {
             label8.Text = "";
             string str = textBox2.Text;
             string getWord;
-           // for(int i=0; i<str.Length;i++) {
                 getWord = "";
                 int i = 0;
                 if (Char.IsLetter(str[i])) {
@@ -364,139 +363,147 @@ namespace LeksAnalizator
                         default: break;
                     }
                 }
-
-//            }
+        }
+        
+        //find THEN
+        //return true if then founded, false in other case.
+        private bool findThen(string str) {
+            string word="";
+            for(int i=0; i<str.Length; i++) {
+                if (str[i] != ' ') {
+                    word += str[i];
+                } 
+                else {
+                    if (keyArray.IndexOf(word) == keyArray.IndexOf("then")) return true;
+                    else word = "";
+                }
+            }
+            return false;
         }
 
-
+        //find bool statement between IF and THEN
+        //return an index of last statement's symbol or str.length if statement is incorrect
         private int findStatement(string str, int i) {
+            int endAt = str.IndexOf("then");
             string word = "";
-            int posStart = i;
-            while (i < str.Length && str[i] != '<' && str[i] != '>' && str[i] != '=') {
-                word += str[i];
-                i++;
+            while(i !=  endAt) {
+                    word += str[i];
+                    i++;
             }
-            bool q = true; //ture = has no statement before delim
-            for (int j=0; j<word.Length; j++) {
-                if (word[j] != ' ') q = false;
-            }
-            word = "";
-            posStart = i;
-            if (!q) {
-                switch (str[i]) {
-                    case '<':
-                        i++;
-                        if (str[i] == '<') {
-                            label8.Text = "Error. Can't find statement.";
-                            i = str.Length;
-                        }
-                        break;
-                    case '>':
-                        i++;
-                        if (str[i] == '>' || str[i] == '<') {
-                            label8.Text = "Error. Can't find statement.";
-                            i = str.Length;
-                        }
-                        break;
-                    case '=':
-                        i++;
-                        if (str[i] == '>' || str[i] == '<' || str[i] == '=') {
-                            label8.Text = "Error. Can't find statement.";
-                            i = str.Length;
-                        }
-                        break;
-                    default:
-                        label8.Text = "Error. No statement.";
-                        break;
-                }
-                if (label8.Text == "") {
-                    while (i < str.Length && !word.Contains("then")) {
-                        word += str[i];
-                        i++;
-                    }
-                    if (i < str.Length) {
-                        int n = word.IndexOf("then");
-                        word = word.Remove(n, 4);
-                    }
-                    q = true;
-                    for (int j = 0; j < word.Length; j++) {
-                        if (word[j] != ' ') q = false;
-                    }
-                    if (!q) {
-                        return posStart;
-                    }
-                    else return str.Length;
-                }
-                else return str.Length;
-            }
+            if (checkStatement(word)) return endAt;
             else return str.Length;
         }
 
-        private void ifStatement(string str, int i) {
-            //if (statement) then (do)
-            //statement = numb/id </>/<=/>=/=/<> num/id
-            i++; //next symbol after space
-            string word = "";
-            bool findEnd = false;
-            if (str[i] == '(' || Char.IsLetter(str[i]) || Char.IsDigit(str[i]) || str[i] == ' ') {
-                if (str[i] == '(') findEnd = true;
-                i = findStatement(str, i);
-                if (i != str.Length) {
-                 //   i--;
-                    word = "";
-                    // ( was
-                    if (findEnd) {
-                        while (i < str.Length && str[i] != ')') i++;
-                        if (i < str.Length && str[i] == ')') {
-                            i++;
-                            while (i < str.Length && word != "then"  ) {
-                                if (str[i] == ' ') word = "";
-                                else word += str[i];
-                                i++;
-                            }
+        //check that bool statement have </>/=/<>/<=/>= and it's parts are correct
+        //return true if all is correct, false in other case
+        private bool checkStatement(string word) {
+            int countBr = 0;
+            int i = 0;
+            string part = "";
+
+            while (i<word.Length && word[i] != '<' && word[i] != '>' && word[i] != '=') {
+                switch (word[i]) {
+                    case '(': countBr++; break;
+                    case ')': countBr--; break;
+                }
+                part += word[i];
+                i++;
+            }
+
+            // found delim
+            if (i != word.Length) {
+                i++;
+                switch (word[i]) {
+                    case '<':
+                        if (word[i] == '<') {
+                            label8.Text = "Error. No statement";
+                            return false;
                         }
+                        break;
+                    case '>':
+                        if (word[i] == '>' || word[i] == '<') {
+                            label8.Text = "Error. No statement";
+                            return false;
+                        }
+                        break;
+                    case '=':
+                        if (word[i] == '=' || word[i] == '<' || word[i] == '>') {
+                            label8.Text = "Error. No statement";
+                            return false;
+                        }
+                        break;
+                }
+
+                if (checkPart(part)) {
+                    part = "";
+                    while (i<word.Length) {
+                        if (word[i] == '<' || word[i] == '>' || word[i] == '=') {
+                            label8.Text = "Error. No statement.";
+                            return false;
+                        }
+                        switch (word[i]) {
+                            case '(': countBr++; break;
+                            case ')': countBr--; break;
+                        }
+                        part += word[i];
+                        i++;
+                    }
+
+                    if (checkPart(part)) {
+                        if (countBr == 0)
+                        return true;
                         else {
                             label8.Text = "Error. No statement.";
+                            return false;
                         }
                     }
-                    // ( wasnt
-                    else {
-                        while (i < str.Length && word != "then") {
-                            if (str[i] == ' ') word = "";
-                            else word += str[i];
-                            i++;
-                        }
-                    }
-                    //dont find "then"
-                    if (i == str.Length - 1 && label8.Text == "") {
-                        label8.Text = "Error. Don't find THEN.";
-                    }
-                    else {
-                        if (i != str.Length && str[i] ==' ') {
-                            label8.Text = "Success.";
-                        }
-                        else {
-                            if(i>= str.Length-1 && label8.Text == "")  label8.Text = "Error. Should do something after THEN.";
-                            else {
-                                if (str[i] != ' ') label8.Text = "Error. Don't find THEN.";
-                            }
-                        }
-                    }
-
-
+                    else return false;
                 }
-                else {
-                    label8.Text = "Error. No statement.";
+                else return false;
+            }
+
+            else {
+                label8.Text = "Error. No statement.";
+                return false;
+            }
+        }
+
+        //check parts of bool statement 
+        //return true if all is correct, false in other case
+        //TODO: have to make it better to check part's grammar.
+        private bool checkPart(string part) {
+            for(int i=0;i<part.Length;i++) {
+                if (part[i] != ' ') {
+                    return true;
+                }
+            }
+            label8.Text = "Error. Wrong statement.";
+            return false;
+        }
+
+
+        //check that all is ok in if constuction.
+        private void ifStatement(string str, int i) {
+            string ending = "";
+
+            //find then and check statement is correct if THEN was found
+            if (findThen(str)) {
+                i = findStatement(str, i);
+                if (i != str.Length) {
+                    i += 4; // then got 4 symbols
+                    for(int j = i; j<str.Length;j++) ending += str[j];
+                    if (checkPart(ending)) label8.Text = "Success.";
+                    else label8.Text = "Error. Should do something after THEN.";
                 }
             }
             else {
-                label8.Text = "Error. No statement.";
+                label8.Text = "Error. Don't find THEN.";
             }
         }
 
         //0 -not keyword 1 - keyword 
         private int checkWord(string word) {
-            if (word == "if") return 1;
+            if (keyArray.Contains(word) || delimArray.Contains(word)) return 1;
             else return 0;
         }
     }
