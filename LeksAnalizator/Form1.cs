@@ -378,8 +378,6 @@ namespace LeksAnalizator
             else {
                 label8.Text ="Error. IF or THEN not found.";
             }
-
-           // Console.ReadKey();
         }
 
         //find if and then. Return TRUE if all is ok in other case return FALSE
@@ -492,7 +490,9 @@ namespace LeksAnalizator
                 }
                 // we found delimetr and it's alone
                 if (!delimF) {
-                    if (!(j < str.Length)) return false;
+                    if (!(j < str.Length))
+                        if (checkGrammar(part)) return true;
+                        else return false;
                     switch (str[j]) {
                         case '<':
                             if (str[j + 1] == '=' || str[j + 1] == '>') j++;
