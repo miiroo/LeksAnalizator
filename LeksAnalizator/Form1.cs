@@ -43,7 +43,7 @@ namespace LeksAnalizator
         private List<String> identArray = new List<String>();
         private List<String> constArray = new List<String>();
 
-        private bool startParse = false;
+      //  private bool startParse = false;
 
         public Form1() {
             //Заполняем константные таблицы
@@ -343,168 +343,193 @@ namespace LeksAnalizator
                 textBox1.Focus();
             }
         }
-   /////////////////////////////////////////////////////////////////////////////////////
-   // //////////////////////////LAB2////////////////////////////////////////////////////
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // //////////////////////////LAB2////////////////////////////////////////////////////
         // if (Length(S) > 15 + 1 + 10) then Error
         private void button2_Click(object sender, EventArgs e) {
-            label8.Text = "";
             string str = textBox2.Text;
-            string getWord;
-                getWord = "";
-                int i = 0;
-                if (Char.IsLetter(str[i])) {
-                    while(str[i] != ' ') {
-                        getWord += str[i];
-                        i++;
-                    }
-                    switch (checkWord(getWord)) {
-                        case 0: label8.Text = "Error. Should start with IF"; break;
-                        case 1: ifStatement(str, i); break;
-                        default: break;
-                    }
+          //  Console.WriteLine("CODE:");
+          //  Console.WriteLine(str);
+            string statement = "";
+            int brackets = 0;
+
+            //there is IF and THEN
+            if (findIfThen(str)) {
+                //get statement between IF and THEN
+                int posStart = str.IndexOf("if") + 2;
+                int posEnd = str.IndexOf("then");
+                for (int i = posStart; i < posEnd; i++) {
+                    if (str[i] == '(') brackets++;
+                    if (str[i] == ')') brackets--;
+                    statement += str[i];
                 }
-        }
-        
-        //find THEN
-        //return true if then founded, false in other case.
-        private bool findThen(string str) {
-            string word="";
-            for(int i=0; i<str.Length; i++) {
-                if (str[i] != ' ') {
-                    word += str[i];
-                } 
-                else {
-                    if (keyArray.IndexOf(word) == keyArray.IndexOf("then")) return true;
-                    else word = "";
+
+                //check expression is correct
+                if (checkExpr(statement) && brackets == 0) {
+                    string part = "";
+                    for (int i = posEnd + 4; i < str.Length; i++) part += str[i];
+                    if (checkGrammar(part)) label8.Text = "Success";
+                    else label8.Text = "Error. Missing statement after THEN.";
                 }
+                else label8.Text="Error. Wrong bool expression.";
             }
-            return false;
+            else {
+                label8.Text ="Error. IF or THEN not found.";
+            }
+
+           // Console.ReadKey();
         }
 
-        //find bool statement between IF and THEN
-        //return an index of last statement's symbol or str.length if statement is incorrect
-        private int findStatement(string str, int i) {
-            int endAt = str.IndexOf("then");
+        //find if and then. Return TRUE if all is ok in other case return FALSE
+        private bool findIfThen(string str) {
             string word = "";
-            while(i !=  endAt) {
+            bool ifFounded = false;
+            bool thenFounded = false;
+            for (int i = 0; i < str.Length; i++) {
+                word = "";
+                while (i < str.Length && !delimArray.Contains(str[i].ToString()) && str[i] != ' ') {
                     word += str[i];
                     i++;
-            }
-            if (checkStatement(word)) return endAt;
-            else return str.Length;
-        }
-
-        //check that bool statement have </>/=/<>/<=/>= and it's parts are correct
-        //return true if all is correct, false in other case
-        private bool checkStatement(string word) {
-            int countBr = 0;
-            int i = 0;
-            string part = "";
-
-            while (i<word.Length && word[i] != '<' && word[i] != '>' && word[i] != '=') {
-                switch (word[i]) {
-                    case '(': countBr++; break;
-                    case ')': countBr--; break;
                 }
-                part += word[i];
-                i++;
-            }
-
-            // found delim
-            if (i != word.Length) {
-                i++;
-                switch (word[i]) {
-                    case '<':
-                        if (word[i] == '<') {
-                            label8.Text = "Error. No statement";
-                            return false;
-                        }
-                        break;
-                    case '>':
-                        if (word[i] == '>' || word[i] == '<') {
-                            label8.Text = "Error. No statement";
-                            return false;
-                        }
-                        break;
-                    case '=':
-                        if (word[i] == '=' || word[i] == '<' || word[i] == '>') {
-                            label8.Text = "Error. No statement";
-                            return false;
-                        }
-                        break;
-                }
-
-                if (checkPart(part)) {
-                    part = "";
-                    while (i<word.Length) {
-                        if (word[i] == '<' || word[i] == '>' || word[i] == '=') {
-                            label8.Text = "Error. No statement.";
-                            return false;
-                        }
-                        switch (word[i]) {
-                            case '(': countBr++; break;
-                            case ')': countBr--; break;
-                        }
-                        part += word[i];
-                        i++;
-                    }
-
-                    if (checkPart(part)) {
-                        if (countBr == 0)
-                        return true;
-                        else {
-                            label8.Text = "Error. No statement.";
-                            return false;
-                        }
-                    }
+                //there should be one IF and one THEN in other case it's error.
+                if (word == "if" && !ifFounded) {
+                    //symbol after IF should be ( or space
+                    if (str[i] == '(' || str[i] == ' ') ifFounded = true;
                     else return false;
                 }
-                else return false;
-            }
-
-            else {
-                label8.Text = "Error. No statement.";
-                return false;
-            }
-        }
-
-        //check parts of bool statement 
-        //return true if all is correct, false in other case
-        //TODO: have to make it better to check part's grammar.
-        private bool checkPart(string part) {
-            for(int i=0;i<part.Length;i++) {
-                if (part[i] != ' ') {
-                    return true;
+                else {
+                    if (word == "if") return false;
                 }
+
+                if (word == "then" && !thenFounded) {
+                    //symbol before THEN should be ) or space
+                    //symbol after THEN should be space
+                    if ((str[str.IndexOf("then") - 1] == ' ' || str[str.IndexOf("then") - 1] == ')') && str[str.IndexOf("then") + 4] == ' ') thenFounded = true;
+                    else return false;
+                }
+                else {
+                    if (word == "then") return false;
+                }
+
             }
-            label8.Text = "Error. Wrong statement.";
+            if (ifFounded && thenFounded) return true;
             return false;
         }
 
+        //chech boolean expression. Return TRUE if all is ok in other case return FALSE
+        private bool checkExpr(string str) {
+            string part = "";
+            string part2 = "";
+            //check that there is OR/AND ///////////
+            if (str.Contains("or")) {
+                //check it's not in some word
+                if (str.IndexOf("or") + 2 < str.Length && (str[str.IndexOf("or") - 1] != ')' && str[str.IndexOf("or") - 1] != ' ') && (str[str.IndexOf("or") + 2] != '(' && str[str.IndexOf("or") + 2] != ' ')) {
+                    //there is no OR. We should check boolean grammar
+                    if (boolGramar(str)) return true;
+                    else return false;
 
-        //check that all is ok in if constuction.
-        private void ifStatement(string str, int i) {
-            string ending = "";
+                }
+                else {
+                    if (!(str.IndexOf("or") + 2 < str.Length)) return false;
+                    //there is OR. We should divide to two parts and check both of them
+                    int posS = str.IndexOf("or");
+                    for (int i = 0; i < posS; i++) part += str[i];
+                    posS += 2;
+                    for (int i = posS; i < str.Length; i++) part2 += str[i];
 
-            //find then and check statement is correct if THEN was found
-            if (findThen(str)) {
-                i = findStatement(str, i);
-                if (i != str.Length) {
-                    i += 4; // then got 4 symbols
-                    for(int j = i; j<str.Length;j++) ending += str[j];
-                    if (checkPart(ending)) label8.Text = "Success.";
-                    else label8.Text = "Error. Should do something after THEN.";
+                    if (checkExpr(part))
+                        if (checkExpr(part2)) return true;
+                        else return false;
+                    else return false;
                 }
             }
-            else {
-                label8.Text = "Error. Don't find THEN.";
+
+            if (str.Contains("and")) {
+                //check it's not in some word
+                if (str.IndexOf("and") + 3 < str.Length && (str[str.IndexOf("and") - 1] != ')' && str[str.IndexOf("and") - 1] != ' ') && (str[str.IndexOf("and") + 3] != '(' && str[str.IndexOf("and") + 3] != ' ')) {
+                    //there is no AND. We should check boolean grammar
+                    if (boolGramar(str)) return true;
+                    else return false;
+                }
+                else {
+                    if (!(str.IndexOf("and") + 3 < str.Length)) return false;
+                    //there is AND. We should divide to two parts and check both of them
+                    int posS = str.IndexOf("and");
+                    for (int i = 0; i < posS; i++) part += str[i];
+                    posS += 3;
+                    for (int i = posS; i < str.Length; i++) part2 += str[i];
+
+                    if (checkExpr(part))
+                        if (checkExpr(part2)) return true;
+                        else return false;
+                    else return false;
+                }
             }
+            ///////////OR/AND CHEKING END//////////////
+
+            //there were no OR/AND
+            if (boolGramar(str)) return true;
+            return false;
         }
 
-        //0 -not keyword 1 - keyword 
-        private int checkWord(string word) {
-            if (keyArray.Contains(word) || delimArray.Contains(word)) return 1;
-            else return 0;
+        //cheking how properly bool statement is
+        //return TRUE if all is ok in other case return FALSE
+        //bool statement is smth </>/<=/>=/= smth
+        //smth = some function or math operations
+        private bool boolGramar(string str) {
+            bool delimF = false;
+            string part = "";
+            bool part1 = false;
+            bool part2 = false;
+            //get parts till and after delim
+            for (int j = 0; j < str.Length; j++) {
+                part = "";
+                while (j < str.Length && str[j] != '<' && str[j] != '>' && str[j] != '=') {
+                    part += str[j];
+                    j++;
+                }
+                // we found delimetr and it's alone
+                if (!delimF) {
+                    if (!(j < str.Length)) return false;
+                    switch (str[j]) {
+                        case '<':
+                            if (str[j + 1] == '=' || str[j + 1] == '>') j++;
+                            part1 = checkGrammar(part);
+                            delimF = true;
+                            break;
+                        case '>':
+                            if (str[j + 1] == '=') j++;
+                            part1 = checkGrammar(part);
+                            delimF = true;
+                            break;
+                        case '=':
+                            part1 = checkGrammar(part);
+                            delimF = true;
+                            break;
+                    }
+                }
+                //we found delimetr but we have already found it
+                //or it's end of string
+                else {
+                    //we found delimetr
+                    if (j < str.Length && (str[j] == '<' || str[j] == '>' || str[j] == '=')) return false;
+                    part2 = checkGrammar(part);
+                }
+            }
+            if (part1 && part2) return true;
+            return false;
+        }
+
+        //we have to check statement grammar
+        //it could be fuction or math operations
+        //but in our case we just check that there is smth
+        private bool checkGrammar(string str) {
+            for (int i = 0; i < str.Length; i++) {
+                if (str[i] != ' ') return true;
+            }
+            return false;
         }
     }
 }
