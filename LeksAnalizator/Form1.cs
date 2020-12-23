@@ -370,9 +370,12 @@ namespace LeksAnalizator
                     //check expression is correct
                     if (checkExpr(statement) && brackets == 0) {
                         string part = "";
-                        for (int i = posEnd + 4; i < str.Length; i++) part += str[i];
+                        for (int i = posEnd + 4; i < str.Length; i++) {
+                            if (str[i] != ';') part += str[i];
+                            else i = str.Length;
+                        }
                         if (checkGr(part)) label8.Text = "Success";
-                        else label8.Text = "Error. Missing statement after THEN.";
+                        else label8.Text = "Error. Missing or wrong statement after THEN.";
                     }
                     else label8.Text = "Error. Wrong bool expression.";
                 }
@@ -501,7 +504,12 @@ namespace LeksAnalizator
             for (int j = 0; j < str.Length; j++) {
                 part = "";
                 while (j < str.Length && str[j] != '<' && str[j] != '>' && str[j] != '=') {
+                    
                     part += str[j];
+                    if (str[j] == ':' && str[j + 1] == '=') {
+                        j++;
+                        part += str[j];
+                    }
                     j++;
                 }
                 // we found delimetr and it's alone
@@ -732,6 +740,7 @@ namespace LeksAnalizator
             word = "";
             while (j < str.Length) {
                 word += str[j];
+                j++;
             }
             if (!checkGr(word)) return false;
 
@@ -746,6 +755,7 @@ namespace LeksAnalizator
             bool isFunc = false;
             string word = "";
             for (int j = 0; j < str.Length; j++) {
+                if (keyArray.Contains(str[j].ToString())) return false;
                 if (str[j] != '.') {
                     if (isFirst) {
                         if (Char.IsDigit(str[j])) return false;
