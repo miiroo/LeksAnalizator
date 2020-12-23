@@ -350,34 +350,49 @@ namespace LeksAnalizator
         // if (Length(S) > 15 + 1 + 10) then Error
         private void button2_Click(object sender, EventArgs e) {
             string str = textBox2.Text;
-          //  Console.WriteLine("CODE:");
-          //  Console.WriteLine(str);
-            string statement = "";
-            int brackets = 0;
+            if (fastAn(str)) {
+                //  Console.WriteLine("CODE:");
+                //  Console.WriteLine(str);
+                string statement = "";
+                int brackets = 0;
 
-            //there is IF and THEN
-            if (findIfThen(str)) {
-                //get statement between IF and THEN
-                int posStart = str.IndexOf("if") + 2;
-                int posEnd = str.IndexOf("then");
-                for (int i = posStart; i < posEnd; i++) {
-                    if (str[i] == '(') brackets++;
-                    if (str[i] == ')') brackets--;
-                    statement += str[i];
+                //there is IF and THEN
+                if (findIfThen(str)) {
+                    //get statement between IF and THEN
+                    int posStart = str.IndexOf("if") + 2;
+                    int posEnd = str.IndexOf("then");
+                    for (int i = posStart; i < posEnd; i++) {
+                        if (str[i] == '(') brackets++;
+                        if (str[i] == ')') brackets--;
+                        statement += str[i];
+                    }
+
+                    //check expression is correct
+                    if (checkExpr(statement) && brackets == 0) {
+                        string part = "";
+                        for (int i = posEnd + 4; i < str.Length; i++) part += str[i];
+                        if (checkGr(part)) label8.Text = "Success";
+                        else label8.Text = "Error. Missing statement after THEN.";
+                    }
+                    else label8.Text = "Error. Wrong bool expression.";
+                }
+                else {
+                    label8.Text = "Error. IF or THEN not found.";
                 }
 
-                //check expression is correct
-                if (checkExpr(statement) && brackets == 0) {
-                    string part = "";
-                    for (int i = posEnd + 4; i < str.Length; i++) part += str[i];
-                    if (checkGr(part)) label8.Text = "Success";
-                    else label8.Text = "Error. Missing statement after THEN.";
+            }
+        }
+
+        private bool fastAn(string str) {
+            int i = 0;
+            while (i < str.Length) {
+                if (Char.IsDigit(str[i]) || Char.IsLetter(str[i]) || delimArray.Contains(str[i].ToString()) || keyArray.Contains(str[i].ToString()) || str[i] == ' ') i++;
+                else {
+                    label8.Text = "Can't recognize that symbol: " + str[i];
+                    return false;
                 }
-                else label8.Text="Error. Wrong bool expression.";
             }
-            else {
-                label8.Text ="Error. IF or THEN not found.";
-            }
+            return true;
         }
 
         //find if and then. Return TRUE if all is ok in other case return FALSE
