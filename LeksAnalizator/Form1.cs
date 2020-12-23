@@ -509,8 +509,7 @@ namespace LeksAnalizator
                     
                     //check is it alone statement or id
                     if (!(j < str.Length))
-                        if (checkGr(part)) return true;
-                        else return false;
+                       return false;
 
                     switch (str[j]) {
                         case '<':
