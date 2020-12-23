@@ -39,7 +39,7 @@ namespace LeksAnalizator
         private String exitMessage = "";
         private int exitCode = 0;
         private List<String> keyArray = new List<String>() { "procedure", "Real", "var", "string", "begin", "if", "then", "else", "end", "while", "do",  "=", "+", "<", ">", "*", "-", "/" };
-        private List<String> delimArray = new List<String>() { ":", ";", "'", ":=", "[", "]", "(", ")", "," };
+        private List<String> delimArray = new List<String>() { ":", ";", "'", ":=", "[", "]", "(", ")", ",", "." };
         private List<String> identArray = new List<String>();
         private List<String> constArray = new List<String>();
 
