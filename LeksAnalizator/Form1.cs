@@ -380,6 +380,7 @@ namespace LeksAnalizator
                                 for (int i = posEnd + 4; i < str.Length; i++) {
                                     if (str[i] != ';') part += str[i];
                                     else {
+                                        i++;
                                         while (i < str.Length && str[i] ==' ') i++;
                                         if (i < str.Length) just = true;
                                         i = str.Length;
@@ -455,10 +456,10 @@ namespace LeksAnalizator
             if (posEnd == 0) return "";
 
             int brackets = 0;
-            int lastPos = posOpen + 1;
+            int lastPos = posOpen+1;
             if (posOpen >= 0 && posOpen < str.Length && str[posOpen] == '(') {
 
-                while (posOpen > 0) {
+                while (posOpen >= 0) {
                     while (lastPos < str.Length && (str[lastPos] != ')' || brackets != 0)) {
                         if (str[lastPos] == '(') brackets++;
                         if (str[lastPos] == ')') brackets--;
@@ -466,7 +467,7 @@ namespace LeksAnalizator
                     }
 
                     if (lastPos == str.Length) {
-                        while (posOpen > 0) {
+                        while (posOpen >= 0) {
                             str = str.Remove(posOpen, 1);
                             posOpen--;
                         }
@@ -490,13 +491,13 @@ namespace LeksAnalizator
                 lastPos = posEnd - 1;
                 if (posEnd < str.Length && posEnd >= 0 && str[posEnd] == ')') {
                     while (posEnd < str.Length) {
-                        while (lastPos > 0 && (str[lastPos] != ')' || brackets != 0)) {
+                        while (lastPos > 0 && (str[lastPos] != '(' || brackets != 0)) {
                             if (str[lastPos] == '(') brackets++;
                             if (str[lastPos] == ')') brackets--;
                             lastPos--;
                         }
 
-                        if (lastPos == -1) {
+                        if (lastPos == 0) {
                             while (posEnd < str.Length) {
                                 str = str.Remove(posEnd, 1);
                             }
@@ -584,7 +585,7 @@ namespace LeksAnalizator
 
         //<bool st> ::= <expr> and/or <bool st> | <expr>
         private bool checkBoolSt(string str) {
-            str = cleaning(str);
+           // str = cleaning(str);
             if (strongError) return false;
             string word1 = "";
             string word2 = "";
@@ -633,6 +634,7 @@ namespace LeksAnalizator
 
         //<expr> ::= <smth> </>/=/<=/>= <smth>
         private bool checkExpr(string str) {
+          //  str = cleaning(str);
             if (strongError) return false; 
             string word = "";
             bool findCompare = false;
@@ -720,7 +722,7 @@ namespace LeksAnalizator
             if (str[0].ToString() == "'" && str[str.Length - 1].ToString() == "'") return true;
             else {
                 if (!checkPart(str)) {
-                   // errorMessage += "\nError message - in " + str; //optional
+                    errorMessage += "\nError message - in " + str; //optional
                     return false;
                 }
             }
@@ -874,7 +876,7 @@ namespace LeksAnalizator
                 }
                 if (str[i] == '.') isWord = false;
                 if (str[i] == '(') return false;
-                if (delimArray.Contains(str[i].ToString()) && str[i] != '(') {
+                if (delimArray.Contains(str[i].ToString()) && str[i] != '(' && str[i] != '.') {
                     strongError = true;
                     errorMessage += "\nError message - identifier/function can't consider current symbol " + str[i] + " in " +str;
                     return false;
