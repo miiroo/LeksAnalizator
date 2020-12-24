@@ -890,80 +890,80 @@ namespace LeksAnalizator
             return true;
         }
 
-        //<func>::=<id>(param) | <id>()
-        //<param> ::=<arg>,<param> | <arg>
-        //<arg> ::= <strconst> | <part>
         private bool checkFunc(string str) {
             if (strongError) return false;
             if (str == "") {
                 strongError = true;
-                errorMessage += "\nError message - missing statement";
+                errorMessage += "\nError: missing statement";
                 return false;
             }
 
+            bool isConst = false;
             string word = "";
             int j = 0;
-            while (j<str.Length && str[j] != '(') {
+            while (j < str.Length && str[j] != '(') {
                 word += str[j];
                 j++;
             }
             if (!checkId(word)) {
-                errorMessage += "\nError message - in " + str; //optional
+                //       errorMessage += "\nError: in " + str; //optional
                 return false;
             }
             bool isArg = false;
             j++;
             word = "";
             int brackets = 1;
-            while (j<str.Length && brackets != 0) {
-                if (str[j] == '(') brackets++;
-                if (str[j] == ')') brackets--;
-
-                if (brackets != 0 && str[j] != ',') word += str[j];
-                if (str[j] == ',') {
+            while (j < str.Length && brackets != 0) {
+                if (str[j] == '(' && !isConst) brackets++;
+                if (str[j] == ')' && !isConst) brackets--;
+                if (str[j].ToString() == "'") isConst = !isConst;
+                if (brackets != 0 && str[j] != ',' && !isConst) word += str[j];
+                if (str[j] == ',' && !isConst) {
                     isArg = true;
                     word = cleaning(word);
-                    if (str[0].ToString() == "'" && str[str.Length - 1].ToString() == "'") word = "";
+                    if (word[0].ToString() == "'" && word[word.Length - 1].ToString() == "'") word = "";
                     else {
                         if (!checkPart(word)) {
-                         //   errorMessage += "\nError message - in " + str; //optional
+                            //   errorMessage += "\nError: in " + str; //optional
                             return false;
                         }
                         word = "";
                     }
                 }
+                if (isConst) word += str[j];
                 j++;
             }
-            if (brackets != 0 ) {
+            if (brackets != 0) {
                 strongError = true;
-                errorMessage = "\nError message - missing ) in " + str;
+                errorMessage = "\nError: missing ) in " + str;
                 return false;
             }
             if (isArg) {
                 word = cleaning(word);
                 if (word == "") {
                     strongError = true;
-                    errorMessage += "\nError message - missing argument in " + str;
+                    errorMessage += "\nError: missing argument in " + str;
                     return false;
                 }
                 if (word[0].ToString() == "'" && word[word.Length - 1].ToString() == "'") return true;
                 if (!checkPart(word)) {
-                 //   errorMessage += "\nError message - in " + str; //optional
+                    //   errorMessage += "\nError: in " + str; //optional
                     return false;
                 }
             }
             if (j < str.Length) {
                 for (int i = j; i < str.Length; i++) {
-                    if (str[i] != ' ' || str[i] != ')' ) {
+                    if (str[i] != ' ' || str[i] != ')') {
                         strongError = true;
-                        errorMessage += "\nError message - expected ; in " + str;
+                        errorMessage += "\nError: expected ; in " + str;
                         return false;
                     }
                 }
             }
             return true;
         }
-        
+
+
         //<state>::=<assign> | <func> | <id>
         private bool checkState(string str) {
             if (strongError) return false;
