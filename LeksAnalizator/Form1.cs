@@ -811,7 +811,7 @@ namespace LeksAnalizator
                 errorMessage += "\nError message - missing statement";
                 return false;
             }
-            if (str[0] == '(') return checkPart(str);
+            if (str[0] == '(' && str[str.Length-1] == ')') return checkPart(str);
             if (checkNumb(str)) return true;
             if (checkId(str)) return true;
             if (checkFunc(str)) return true;
